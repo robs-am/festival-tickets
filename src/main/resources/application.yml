@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: festival-tickets
+
+ticketmaster:
+  api-key: ${TICKETMASTER_API_KEY}
+  base-url: https://app.ticketmaster.com/discovery/v2
