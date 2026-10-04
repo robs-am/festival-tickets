@@ -1,6 +1,7 @@
 package com.roberta.festivaltickets
 
 import com.roberta.festivaltickets.integration.ticketmaster.TicketmasterClient
+import com.roberta.festivaltickets.integration.ticketmaster.toShow
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
@@ -11,13 +12,12 @@ class TicketmasterSmokeTest(
 
     override fun run(vararg args: String) {
         val response = client.searchEvents("Lagum")
-        val events = response?.embedded?.events.orEmpty()
+        val shows = response?.embedded?.events.orEmpty()
+            .mapNotNull { it.toShow() }
+            .sortedBy { it.date }
 
-        println("Total de eventos: ${response?.page?.totalElements}")
-
-        events.forEach { event ->
-            val venue = event.embedded?.venues?.firstOrNull()?.name
-            println("${event.dates?.start?.localDate} - ${event.name} - $venue")
+        shows.forEach { show ->
+            println("${show.date} ${show.time} - ${show.name} - ${show.venueName} (${show.state})")
         }
     }
 }
